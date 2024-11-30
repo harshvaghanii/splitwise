@@ -13,6 +13,11 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @GetMapping(path = "signup")
+    public String signup() {
+        return "Reached here!";
+    }
+
     @PostMapping(path = "signup")
     public UserDTO signup(@RequestBody SignUpDTO signUpDTO) {
         return authService.signup(signUpDTO);

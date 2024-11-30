@@ -7,6 +7,7 @@ import com.cs597.project.splitwise.repositories.UserRepository;
 import com.cs597.project.splitwise.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +18,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDTO signup(SignUpDTO signUpDTO) {
@@ -24,6 +26,9 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("User with email " + signUpDTO.getEmail() + " already exists!");
         }
         UserEntity toBeCreatedUser = modelMapper.map(signUpDTO, UserEntity.class);
+        String plainPassword = toBeCreatedUser.getPassword();
+        String hashedPassword = passwordEncoder.encode(plainPassword);
+        toBeCreatedUser.setPassword(hashedPassword);
         UserEntity savedUser = userRepository.save(toBeCreatedUser);
         return modelMapper.map(savedUser, UserDTO.class);
     }
