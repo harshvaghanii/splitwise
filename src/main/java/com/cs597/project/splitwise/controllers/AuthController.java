@@ -1,5 +1,6 @@
 package com.cs597.project.splitwise.controllers;
 
+import com.cs597.project.splitwise.advices.ApiResponse;
 import com.cs597.project.splitwise.dto.LoginDTO;
 import com.cs597.project.splitwise.dto.SignUpDTO;
 import com.cs597.project.splitwise.dto.UserDTO;
@@ -8,6 +9,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/user/auth/")
@@ -18,23 +21,26 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping(path = "/some")
-    public String signup() {
-        return "Reached here!";
+    public ResponseEntity<ApiResponse<String>> signup() {
+        String message = "Reached here!";
+        if (message == null) return ResponseEntity.notFound().build();
+        return new ResponseEntity<>(new ApiResponse<>(message), HttpStatus.OK);
     }
 
     @PostMapping(path = "signup")
-    public UserDTO signup(@RequestBody SignUpDTO signUpDTO) {
-        return authService.signup(signUpDTO);
+    public ResponseEntity<ApiResponse<UserDTO>> signup(@RequestBody SignUpDTO signUpDTO) {
+        UserDTO userDTO = authService.signup(signUpDTO);
+        return new ResponseEntity<>(new ApiResponse<>(userDTO), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "login")
-    public String login(@RequestBody LoginDTO loginDTO, HttpServletRequest request,
-                        HttpServletResponse response) {
-        String token = authService.login(loginDTO);
+    public ResponseEntity<ApiResponse<String>> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request,
+                                                     HttpServletResponse response) {
+        String token = authService.login(request, response, loginDTO);
         Cookie cookie = new Cookie("token", token);
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
-        return token;
+        return new ResponseEntity<>(new ApiResponse<>(token), HttpStatus.OK);
     }
 
 }

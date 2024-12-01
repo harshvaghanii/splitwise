@@ -4,16 +4,25 @@ import com.cs597.project.splitwise.dto.LoginDTO;
 import com.cs597.project.splitwise.dto.SignUpDTO;
 import com.cs597.project.splitwise.dto.UserDTO;
 import com.cs597.project.splitwise.entities.UserEntity;
+import com.cs597.project.splitwise.exceptions.DuplicateResourceException;
+import com.cs597.project.splitwise.exceptions.ResourceNotFoundException;
 import com.cs597.project.splitwise.repositories.UserRepository;
 import com.cs597.project.splitwise.services.AuthService;
 import com.cs597.project.splitwise.services.JWTService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.Optional;
 
@@ -27,10 +36,14 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
 
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver handlerExceptionResolver;
+
     @Override
     public UserDTO signup(SignUpDTO signUpDTO) {
         if (doesExist(signUpDTO.getEmail())) {
-            throw new RuntimeException("User with email " + signUpDTO.getEmail() + " already exists!");
+            throw new DuplicateResourceException("User with email " + signUpDTO.getEmail() + " already exists!");
         }
         UserEntity toBeCreatedUser = modelMapper.map(signUpDTO, UserEntity.class);
         String plainPassword = toBeCreatedUser.getPassword();
@@ -41,12 +54,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(LoginDTO loginDTO) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
-        );
-        UserEntity user = (UserEntity) authentication.getPrincipal();
-        return jwtService.generateToken(user);
+    public String login(HttpServletRequest request, HttpServletResponse response, LoginDTO loginDTO) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
+            );
+            UserEntity user = (UserEntity) authentication.getPrincipal();
+            return jwtService.generateToken(user);
+        } catch (AuthenticationException exception) {
+            System.out.println("Reached Here!");
+            throw new ResourceNotFoundException("Please check the credentials and try again!");
+        }
     }
 
     public boolean doesExist(String email) {

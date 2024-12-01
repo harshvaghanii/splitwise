@@ -1,6 +1,7 @@
 package com.cs597.project.splitwise.services.Impl;
 
 import com.cs597.project.splitwise.entities.UserEntity;
+import com.cs597.project.splitwise.exceptions.ResourceNotFoundException;
 import com.cs597.project.splitwise.repositories.UserRepository;
 import com.cs597.project.splitwise.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     public UserEntity getUserById(Long userID) {
         return userRepository.findById(userID)
-                .orElseThrow(() -> new UsernameNotFoundException("User with id " + userID + " not found!"));
+                .orElseThrow(() -> new BadCredentialsException("User with id " + userID + " not found!"));
     }
 }
