@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "balances")
 public class BalanceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
