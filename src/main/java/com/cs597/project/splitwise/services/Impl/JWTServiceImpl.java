@@ -28,7 +28,7 @@ public class JWTServiceImpl implements JWTService {
                 .subject(String.valueOf(userEntity.getId()))
                 .claim("email", userEntity.getEmail())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60))
+                .expiration(new Date(System.currentTimeMillis() + 10000 * 60))
                 .signWith(getSecretKey())
                 .compact();
     }

@@ -17,7 +17,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping(path = "signup")
+    @GetMapping(path = "/some")
     public String signup() {
         return "Reached here!";
     }
