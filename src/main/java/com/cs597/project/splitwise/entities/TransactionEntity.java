@@ -38,7 +38,8 @@ public class TransactionEntity {
     @Column(name = "description", length = 255)
     private String description;
 
-    @Column(name = "transaction_date", nullable = false)
+    @CreationTimestamp
+    @Column(name = "transaction_date")
     private LocalDateTime transactionDate;
 
     @CreationTimestamp

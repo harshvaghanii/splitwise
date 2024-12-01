@@ -14,5 +14,6 @@ public class BalanceDTO {
     private UserDTO user1;
     private UserDTO user2;
     private BigDecimal balanceAmount;
+    private LocalDateTime createdAt;
     private LocalDateTime lastUpdated;
 }

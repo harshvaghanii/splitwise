@@ -1,10 +1,8 @@
 package com.cs597.project.splitwise.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
@@ -15,11 +13,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @Table(name = "balances")
 public class BalanceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "balance_id")
+    @Column(name = "id")
     Long id;
 
     @ManyToOne
@@ -32,6 +31,13 @@ public class BalanceEntity {
 
     @Column(nullable = false)
     private BigDecimal balanceAmount;
+
+    @Column(nullable = false, name = "balace_id", unique = true)
+    private String balanceId;
+
+    @Column(name = "first_transaction")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "last_updated")

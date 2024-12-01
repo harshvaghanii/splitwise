@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -76,6 +77,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
             fieldToBeUpdated.setAccessible(true);
             ReflectionUtils.setField(fieldToBeUpdated, entity, value);
         });
+        entity.setUpdatedAt(LocalDateTime.now());
         return modelMapper.map(userRepository.save(entity), UserDTO.class);
     }
 
