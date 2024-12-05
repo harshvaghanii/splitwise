@@ -2,6 +2,7 @@ package com.cs597.project.splitwise.advices;
 
 import com.cs597.project.splitwise.exceptions.DuplicateResourceException;
 import com.cs597.project.splitwise.exceptions.ResourceNotFoundException;
+import com.cs597.project.splitwise.exceptions.UnauthorizedActionException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,16 @@ public class GlobalExceptionHandler {
         ApiError apiError = ApiError
                 .builder()
                 .status(HttpStatus.UNAUTHORIZED)
+                .message(exception.getMessage())
+                .build();
+        return buildErrorResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(UnauthorizedActionException.class)
+    public ResponseEntity<ApiResponse<?>> handleUnauthorizedActionException(UnauthorizedActionException exception) {
+        ApiError apiError = ApiError
+                .builder()
+                .status(HttpStatus.FORBIDDEN)
                 .message(exception.getMessage())
                 .build();
         return buildErrorResponseEntity(apiError);

@@ -3,12 +3,15 @@ package com.cs597.project.splitwise.services.Impl;
 import com.cs597.project.splitwise.dto.UserDTO;
 import com.cs597.project.splitwise.entities.UserEntity;
 import com.cs597.project.splitwise.exceptions.ResourceNotFoundException;
+import com.cs597.project.splitwise.exceptions.UnauthorizedActionException;
 import com.cs597.project.splitwise.repositories.UserRepository;
 import com.cs597.project.splitwise.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.util.ReflectionUtils;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -55,7 +58,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Override
     public UserDTO updateUserById(UserDTO userDTO, Long userId) {
-        System.out.println("In service impl");
+
+        if (!isAuthorized(userDTO)) {
+            throw new UnauthorizedActionException("You are not authorized to do that!");
+        }
 
         if (!userExistsByID(userId)) return null;
         UserEntity userEntity = modelMapper.map(userDTO, UserEntity.class);
@@ -72,6 +78,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         boolean exists = userExistsByID(userId);
         if (!exists) return null;
         UserEntity entity = userRepository.findById(userId).get();
+        if (!isAuthorized(modelMapper.map(entity, UserDTO.class))) {
+            throw new UnauthorizedActionException("You are not authorized to do this!");
+        }
         updates.forEach((field, value) -> {
             Field fieldToBeUpdated = ReflectionUtils.findRequiredField(UserEntity.class, field);
             fieldToBeUpdated.setAccessible(true);
@@ -83,6 +92,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     public boolean userExistsByID(Long id) {
         return userRepository.existsById(id);
+    }
+
+    // Util method to check authorisation
+    public boolean isAuthorized(UserDTO user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long requesterId = ((UserEntity) authentication.getPrincipal()).getId();
+        Long editorId = user.getId();
+        return requesterId.equals(editorId);
     }
 
 }

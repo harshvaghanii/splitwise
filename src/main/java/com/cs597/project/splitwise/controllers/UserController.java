@@ -4,6 +4,7 @@ import com.cs597.project.splitwise.advices.ApiResponse;
 import com.cs597.project.splitwise.dto.UserDTO;
 import com.cs597.project.splitwise.entities.UserEntity;
 import com.cs597.project.splitwise.exceptions.ResourceNotFoundException;
+import com.cs597.project.splitwise.exceptions.UnauthorizedActionException;
 import com.cs597.project.splitwise.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -42,14 +43,15 @@ public class UserController {
 
     @PutMapping(path = "/{userId}")
     public ResponseEntity<ApiResponse<UserDTO>> updateEmployeeById(@RequestBody UserDTO userDTO, @PathVariable Long userId) {
-        System.out.println("Starting...");
-        UserDTO userDTO1 = userService.updateUserById(userDTO, userId);
-        if (userDTO1 == null) {
-            System.out.println("Null");
-            throw new ResourceNotFoundException("Employee with id " + userId + " not found!");
+        try {
+            UserDTO userDTO1 = userService.updateUserById(userDTO, userId);
+            if (userDTO1 == null) {
+                throw new ResourceNotFoundException("Employee with id " + userId + " not found!");
+            }
+            return new ResponseEntity<>(new ApiResponse<>(userDTO1), HttpStatus.OK);
+        } catch (UnauthorizedActionException exception) {
+            throw new UnauthorizedActionException(exception.getMessage());
         }
-        System.out.println(userDTO1);
-        return new ResponseEntity<>(new ApiResponse<>(userDTO1), HttpStatus.OK);
     }
 
     @PatchMapping(path = "/{userId}")
