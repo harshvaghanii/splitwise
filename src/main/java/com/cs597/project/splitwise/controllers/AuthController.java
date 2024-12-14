@@ -39,7 +39,7 @@ public class AuthController {
     @PostMapping(path = "signup")
     public ResponseEntity<ApiResponse<UserDTO>> signup(@RequestBody SignUpDTO signUpDTO) {
         UserDTO userDTO = authService.signup(signUpDTO);
-        return new ResponseEntity<>(new ApiResponse<>(userDTO), HttpStatus.CREATED)
+        return new ResponseEntity<>(new ApiResponse<>(userDTO), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "login")
