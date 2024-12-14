@@ -32,7 +32,8 @@ public class WebSecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/auth/signup", "/user/auth/login", "/error", "/public/**").permitAll()
+//                        .requestMatchers("/user/auth/signup", "/user/auth/login", "/user/auth/refresh", "/error", "/public/**").permitAll()
+                        .requestMatchers("/user/auth/**", "/error", "/public/**").permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,6 +1,7 @@
 package com.cs597.project.splitwise.services.Impl;
 
 import com.cs597.project.splitwise.dto.LoginDTO;
+import com.cs597.project.splitwise.dto.LoginResponseDTO;
 import com.cs597.project.splitwise.dto.SignUpDTO;
 import com.cs597.project.splitwise.dto.UserDTO;
 import com.cs597.project.splitwise.entities.UserEntity;
@@ -9,6 +10,7 @@ import com.cs597.project.splitwise.exceptions.ResourceNotFoundException;
 import com.cs597.project.splitwise.repositories.UserRepository;
 import com.cs597.project.splitwise.services.AuthService;
 import com.cs597.project.splitwise.services.JWTService;
+import com.cs597.project.splitwise.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -35,8 +36,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
+    private final UserService userService;
 
-    @Autowired
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver handlerExceptionResolver;
 
@@ -54,17 +55,24 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(HttpServletRequest request, HttpServletResponse response, LoginDTO loginDTO) {
+    public LoginResponseDTO login(HttpServletRequest request, HttpServletResponse response, LoginDTO loginDTO) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
-            );
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
             UserEntity user = (UserEntity) authentication.getPrincipal();
-            return jwtService.generateToken(user);
+            String accessToken = jwtService.generateAccessToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
+            return new LoginResponseDTO(user.getId(), accessToken, refreshToken);
         } catch (AuthenticationException exception) {
-            System.out.println("Reached Here!");
             throw new ResourceNotFoundException("Please check the credentials and try again!");
         }
+    }
+
+    @Override
+    public LoginResponseDTO refreshToken(String refreshToken) {
+        Long userId = jwtService.getUserIdFromToken(refreshToken);
+        UserEntity userEntity = userService.getUserById(userId);
+        String accessToken = jwtService.generateAccessToken(userEntity);
+        return new LoginResponseDTO(userEntity.getId(), accessToken, refreshToken);
     }
 
     public boolean doesExist(String email) {

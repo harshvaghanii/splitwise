@@ -19,7 +19,7 @@ class SplitwiseApplicationTests {
     void contextLoads() {
 
         UserEntity userEntity = new UserEntity(1L, "Harsh", "harsh98@gmail.com", "1234", LocalDateTime.now(), LocalDateTime.now());
-        String token = jwtService.generateToken(userEntity);
+        String token = jwtService.generateAccessToken(userEntity);
         System.out.println(token);
         Long userId = jwtService.getUserIdFromToken(token);
         System.out.println(userId);
