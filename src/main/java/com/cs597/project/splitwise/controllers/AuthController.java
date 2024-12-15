@@ -5,7 +5,6 @@ import com.cs597.project.splitwise.dto.LoginDTO;
 import com.cs597.project.splitwise.dto.LoginResponseDTO;
 import com.cs597.project.splitwise.dto.SignUpDTO;
 import com.cs597.project.splitwise.dto.UserDTO;
-import com.cs597.project.splitwise.exceptions.UnauthorizedActionException;
 import com.cs597.project.splitwise.services.AuthService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.naming.AuthenticationException;
 import java.util.Arrays;
 
 @RequestMapping("/user/auth/")
