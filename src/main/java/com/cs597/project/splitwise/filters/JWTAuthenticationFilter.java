@@ -1,7 +1,6 @@
 package com.cs597.project.splitwise.filters;
 
 import com.cs597.project.splitwise.entities.UserEntity;
-import com.cs597.project.splitwise.repositories.UserRepository;
 import com.cs597.project.splitwise.services.JWTService;
 import com.cs597.project.splitwise.services.UserService;
 import jakarta.servlet.FilterChain;
@@ -13,14 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component

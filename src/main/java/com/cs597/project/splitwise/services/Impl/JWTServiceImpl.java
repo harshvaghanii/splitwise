@@ -16,19 +16,29 @@ import java.util.Date;
 public class JWTServiceImpl implements JWTService {
 
     @Value("${jwt.secretKey}")
-    private String jwtSecretkey;
+    private String jwtSecretKey;
 
     private SecretKey getSecretKey() {
-        return Keys.hmacShaKeyFor(jwtSecretkey.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     @Override
-    public String generateToken(UserEntity userEntity) {
+    public String generateAccessToken(UserEntity userEntity) {
         return Jwts.builder()
                 .subject(String.valueOf(userEntity.getId()))
                 .claim("email", userEntity.getEmail())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + (3 * 24 * 60 * 60 * 1000)))
+                .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 10)))
+                .signWith(getSecretKey())
+                .compact();
+    }
+
+    @Override
+    public String generateRefreshToken(UserEntity userEntity) {
+        return Jwts.builder()
+                .subject(String.valueOf(userEntity.getId()))
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 7)))
                 .signWith(getSecretKey())
                 .compact();
     }
