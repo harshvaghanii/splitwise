@@ -49,6 +49,12 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
+    public UserEntity findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElse(null);
+    }
+
+    @Override
     public boolean deleteUser(Long id) {
         boolean exists = userExistsByID(id);
         if (!exists) return false;
@@ -88,6 +94,11 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         });
         entity.setUpdatedAt(LocalDateTime.now());
         return modelMapper.map(userRepository.save(entity), UserDTO.class);
+    }
+
+    @Override
+    public UserEntity save(UserEntity newUser) {
+        return userRepository.save(newUser);
     }
 
     public boolean userExistsByID(Long id) {

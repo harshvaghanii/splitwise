@@ -12,9 +12,13 @@ public interface UserService {
 
     Optional<UserDTO> getUserByEmail(String email);
 
+    UserEntity findByEmail(String email);
+
     public boolean deleteUser(Long id);
 
     public UserDTO updateUserById(UserDTO userDTO, Long id);
 
     public UserDTO updatePartialUserById(Long userId, Map<String, Object> updates);
+
+    UserEntity save(UserEntity newUser);
 }

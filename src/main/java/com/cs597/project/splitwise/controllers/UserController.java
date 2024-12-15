@@ -36,7 +36,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserDTO>> getUserByEmail(@PathVariable String email) {
         Optional<UserDTO> user = userService.getUserByEmail(email);
         if (user.isEmpty()) {
-            throw new ResourceNotFoundException("Employee with email " + email + " not found!");
+            throw new ResourceNotFoundException("User with email " + email + " not found!");
         }
         return new ResponseEntity<>(new ApiResponse<>(user.get()), HttpStatus.OK);
     }
