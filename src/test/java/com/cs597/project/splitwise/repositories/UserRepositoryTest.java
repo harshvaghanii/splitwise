@@ -20,6 +20,7 @@ class UserRepositoryTest {
         for (String email : validEmails) {
             Optional<UserEntity> user = userRepository.findByEmail(email);
             assert (user.isPresent());
+            assert (user.get().getEmail().equals(email));
         }
     }
 
