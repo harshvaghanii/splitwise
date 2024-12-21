@@ -7,7 +7,11 @@
 ### **Project Title**: **Splitwise Clone**
 
 ### **Description**:
-The project implements a simplified version of Splitwise, a platform for tracking shared expenses and balances among users. It allows users to create accounts, log in securely, record transactions, and track balances with other users. The application is built with modern Java frameworks, including **Spring Boot**, and demonstrates best practices in authentication, authorization, and database management.
+
+The project implements a simplified version of Splitwise, a platform for tracking shared expenses and balances among
+users. It allows users to create accounts, log in securely, record transactions, and track balances with other users.
+The application is built with modern Java frameworks, including **Spring Boot**, and demonstrates best practices in
+authentication, authorization, and database management.
 
 ---
 
@@ -20,7 +24,8 @@ The project implements a simplified version of Splitwise, a platform for trackin
 2. **Transaction Management**:
     - Add and track transactions between users.
     - Automatically update balances based on transactions.
-    - Maintain accurate balance amounts, where positive balances indicate money owed and negative balances indicate money due.
+    - Maintain accurate balance amounts, where positive balances indicate money owed and negative balances indicate
+      money due.
 
 3. **Balance Management**:
     - Balances are maintained between user pairs using a unique identifier in the format `userID1_userID2` (sorted).
@@ -39,6 +44,7 @@ The project implements a simplified version of Splitwise, a platform for trackin
 ## **Technologies Used**
 
 ### **Backend**:
+
 - **Java 22**: Primary programming language.
 - **Spring Boot 3.3.3**: For application configuration and dependency injection
 - **Spring Data JPA**: For ORM and database interactions.
@@ -47,10 +53,12 @@ The project implements a simplified version of Splitwise, a platform for trackin
 - **ModelMapper**: For entity-to-DTO mapping.
 
 ### **Database**:
+
 - **PostgreSQL**: For data persistence.
 - **H2 (In-Memory)**: For local development and testing.
 
 ### **Tools**:
+
 - **IntelliJ IDEA**: Integrated Development Environment (IDE).
 - **Postman**: For API testing.
 - **DBeaver**: For database management.
@@ -61,6 +69,7 @@ The project implements a simplified version of Splitwise, a platform for trackin
 ## **Architecture Overview**
 
 ### **Application Layers**:
+
 1. **Controller Layer**:
     - Handles incoming HTTP requests.
     - Maps requests to service methods.
@@ -82,20 +91,24 @@ The project implements a simplified version of Splitwise, a platform for trackin
     - Contains reusable logic such as balance ID generation (`BalanceUtility`).
 
 ### **Authentication Flow**:
+
 - User logs in with credentials.
 - Server generates a JWT and returns it to the user.
 - Subsequent requests include the JWT in the `Authorization` header.
 - Spring Security validates the JWT and authenticates the user.
 
 ### **Authorization Flow**:
+
 - Extracts the authenticated user's ID from the JWT.
-- Validates that the user has permission to perform the requested action (e.g., modifying their own transactions or balances).
+- Validates that the user has permission to perform the requested action (e.g., modifying their own transactions or
+  balances).
 
 ---
 
 ## **Database Design**
 
 ### **Tables**:
+
 1. **Users Table**:
     - Stores user information such as `id`, `name`, `email`, and `password`.
 
@@ -110,14 +123,17 @@ The project implements a simplified version of Splitwise, a platform for trackin
 ## **Key Implementations**
 
 ### **JWT-Based Authentication**:
+
 - **JWTService**: Handles token generation and validation.
 - **JWTAuthenticationFilter**: Intercepts requests, validates tokens, and sets the authentication context.
 
 ### **Balance Management Logic**:
+
 - Unique `balanceId` (`userID1_userID2`) ensures one record per user pair.
 - Balances are updated in real-time after each transaction.
 
 ### **Custom Exception Handling**:
+
 - `UnauthorizedActionException`: Thrown when a user attempts an unauthorized action.
 - `ResourceNotFoundException`: Thrown when requested data does not exist.
 - Handled globally using `@ControllerAdvice`.
@@ -127,11 +143,24 @@ The project implements a simplified version of Splitwise, a platform for trackin
 ## **Testing**
 
 ### **Manual Testing**:
-- **Postman**: Used to test all API endpoints, including user registration, login, transaction creation, and balance updates.
+
+- **Postman**: Used to test all API endpoints, including user registration, login, transaction creation, and balance
+  updates.
+
+### Unit Testing
+
+1. **Repository Layer**
+    - Tested using a Docker image of the PostgreSQL database to ensure accurate data persistence and retrieval.
+    - Validated custom queries and interactions with the ```JpaRepository```.
+2. **Service Layer**
+    - Tested using the Mockito library to mock repository dependencies.
+    - Ensured business logic correctness and proper exception handling for scenarios such as unauthorized actions or
+      resource not found.
 
 ---
 
 ## **Challenges Faced**
+
 1. **Repository Errors**:
     - Resolved issues with `JpaRepository` by aligning the Spring Boot version and ensuring JDK 17 compatibility.
 
@@ -144,6 +173,7 @@ The project implements a simplified version of Splitwise, a platform for trackin
 ---
 
 ## **Future Improvements**
+
 1. **UI Development**:
     - Integrate a frontend using React or Angular to provide a better user experience.
 2. **Notifications**:
@@ -152,10 +182,16 @@ The project implements a simplified version of Splitwise, a platform for trackin
     - Allow users to perform transactions in different currencies.
 4. **Enhanced Analytics**:
     - Provide detailed expense reports and summaries.
+5. **Integration Testing**:
+    - Plan to implement integration tests to verify interactions between application layers (Controller, Service,
+      Repository).
 
 ---
 
 ## **Conclusion**
-The Splitwise Clone successfully implements core functionality for managing shared expenses and balances between users. By leveraging modern technologies like Spring Boot, JWT, and PostgreSQL, the project is secure, scalable, and ready for future enhancements. This project demonstrates strong adherence to clean architecture and industry best practices.
+
+The Splitwise Clone successfully implements core functionality for managing shared expenses and balances between users.
+By leveraging modern technologies like Spring Boot, JWT, and PostgreSQL, the project is secure, scalable, and ready for
+future enhancements. This project demonstrates strong adherence to clean architecture and industry best practices.
 
 ---
