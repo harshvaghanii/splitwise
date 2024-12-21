@@ -1,4 +1,4 @@
-# **Project Report **
+# **Project Report**
 
 ---
 
