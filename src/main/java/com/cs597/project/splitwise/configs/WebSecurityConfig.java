@@ -29,7 +29,7 @@ public class WebSecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers("/user/auth/signup", "/user/auth/login", "/user/auth/refresh", "/error", "/public/**").permitAll()
-                        .requestMatchers("/user/auth/**", "/error", "/public/**", "/home.html").permitAll()
+                        .requestMatchers("/user/**","/user/auth/**", "/error", "/public/**", "/home.html").permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
